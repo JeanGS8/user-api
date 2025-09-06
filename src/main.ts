@@ -9,10 +9,12 @@ import { Bcrypt } from './auth/bcrypt/bcrypt';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   const roleRepository = app.get<Repository<Role>>(getRepositoryToken(Role));
   const usuarioRepository = app.get<Repository<Usuario>>(getRepositoryToken(Usuario));
   const bcrypt = app.get(Bcrypt);
   await initialSeed(roleRepository, usuarioRepository, bcrypt);
+  
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

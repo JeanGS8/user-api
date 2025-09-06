@@ -58,15 +58,12 @@ export class UsuarioService {
     });
   }
 
-  async create(dto: CreateUsuarioDto, usuarioLogado?: AuthResponseDto): Promise<Usuario> {
-    let role: Role | null;
-    if(usuarioLogado && usuarioLogado.role.nome !== 'ADMIN'){
-      role = await this.roleRepository.findOneBy({ id: dto.roleId });
-    }
-    else{
-      role = await this.roleRepository.findOneBy({ id: userRole.USUARIO });
-    }
+  async create(dto: CreateUsuarioDto, usuarioLogado: AuthResponseDto): Promise<Usuario> {
+    if(usuarioLogado.role.nome !== 'ADMIN')
+      throw new Error('Você não tem permissão para criar um usuário');
 
+    const role = await this.roleRepository.findOneBy({ id: dto.roleId });
+    
     if (!role)
         throw new Error('Role não encontrada');
 

@@ -6,6 +6,7 @@ import { Usuario } from '../entities/usuario.entity';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
@@ -19,15 +20,13 @@ export class UsuarioController {
     const usuarioLogado: AuthResponseDto = req.user;
     return await this.usuarioService.create(createUsuarioDto, usuarioLogado);
   }
-
-  @UseGuards(JwtAuthGuard)
+  
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Usuario[]> {
     return await this.usuarioService.findAll();
   }
-
-  @UseGuards(JwtAuthGuard)
+  
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findById(
@@ -37,8 +36,7 @@ export class UsuarioController {
     if(!usuario) throw new Error('Usuário não encontrado');
     return usuario;
   }
-
-  @UseGuards(JwtAuthGuard)
+  
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   async update(
@@ -49,8 +47,7 @@ export class UsuarioController {
     const usuarioLogado: AuthResponseDto = req.user;
     return await this.usuarioService.update(id, updateUsuarioDto, usuarioLogado);
   }
-
-  @UseGuards(JwtAuthGuard)
+  
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
