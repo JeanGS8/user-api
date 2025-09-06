@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, MinLength } from "class-validator";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Etnia } from "../enums/etnia.enum";
 import { Role } from "../../role/entities/role.entity";
@@ -9,18 +9,23 @@ export class Usuario {
 
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @IsNotEmpty()
   @Column({ length: 100 , nullable: false })
   nome: string;
-
+  
   @IsNotEmpty()
   @Column({ length: 20 , nullable: false })
   telefone: string;
-
+  
   @IsNotEmpty()
-  @Column({ length: 50 , nullable: false })
+  @Column({ length: 50 , nullable: false, unique: true })
   email: string;
+  
+  @IsNotEmpty()
+  @MinLength(6)
+  @Column({ length: 200 , nullable: false })
+  senha: string;
 
   @IsNotEmpty()
   @Column({ type: 'int', nullable: false })

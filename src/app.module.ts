@@ -1,10 +1,9 @@
-import { config } from 'dotenv';
-config();
 import { Module } from '@nestjs/common';
 import { UsuarioModule } from './usuario/usuario.module';
 import { RoleModule } from './role/role.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EnderecoModule } from './endereco/endereco.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,7 +18,8 @@ import { EnderecoModule } from './endereco/endereco.module';
     }),
     UsuarioModule,
     RoleModule,
-    EnderecoModule
+    EnderecoModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

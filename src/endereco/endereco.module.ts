@@ -4,10 +4,11 @@ import { EnderecoController } from './controllers/endereco.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Endereco } from './entities/endereco.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { Bcrypt } from 'src/auth/bcrypt/bcrypt';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Endereco, Usuario])],
-  providers: [EnderecoService],
+  providers: [EnderecoService, Bcrypt],
   controllers: [EnderecoController],
   exports: [EnderecoService],
 })

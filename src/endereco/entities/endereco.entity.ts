@@ -26,6 +26,6 @@ export class Endereco {
   estado: string
   
   @ManyToOne(() => Usuario, usuario => usuario.enderecos)
-  @JoinColumn({ name: 'usuario_id' })
+  @JoinColumn({ name: 'usuario_email' })
   usuario: Usuario;
 }

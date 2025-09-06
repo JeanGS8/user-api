@@ -1,9 +1,9 @@
-import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, Length } from "class-validator";
+import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, IsString, Length, MinLength } from "class-validator";
 import { Etnia } from "../enums/etnia.enum";
 
 export enum userRole {
   USUARIO = 1,
-  ADMIN = 2
+  ADMIN = 2,
 };
 
 export class CreateUsuarioDto {
@@ -18,6 +18,11 @@ export class CreateUsuarioDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(6)
+  senha: string;
 
   @IsNotEmpty()
   @IsInt()
