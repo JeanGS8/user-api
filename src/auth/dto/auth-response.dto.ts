@@ -1,5 +1,4 @@
 import { IsEmail, IsInt, IsNotEmpty, IsString } from "class-validator";
-import { CreateRoleDto } from "src/role/dto/create-role.dto";
 
 export class AuthResponseDto {
   @IsNotEmpty()
@@ -15,5 +14,5 @@ export class AuthResponseDto {
   token: string;
 
   @IsNotEmpty()
-  role: CreateRoleDto;
+  role: string;
 }

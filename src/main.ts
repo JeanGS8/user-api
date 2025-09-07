@@ -15,6 +15,12 @@ async function bootstrap() {
   const bcrypt = app.get(Bcrypt);
   await initialSeed(roleRepository, usuarioRepository, bcrypt);
   
+  app.enableCors({
+    origin: 'http://localhost:5173', // URL do seu frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true, // se for usar cookies ou headers de autenticação
+  });
+  
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

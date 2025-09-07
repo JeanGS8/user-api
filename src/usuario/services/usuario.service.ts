@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from '../entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { Role } from '../../role/entities/role.entity';
-import { CreateUsuarioDto, userRole } from '../dto/create-usuario.dto';
+import { CreateUsuarioDto } from '../dto/create-usuario.dto';
 import { UpdateUsuarioDto } from '../dto/update-usuario.dto';
 import { Bcrypt } from 'src/auth/bcrypt/bcrypt';
 import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
@@ -20,7 +20,7 @@ export class UsuarioService {
     private bcrypt: Bcrypt
   ) {}
 
-  async findById(id: number): Promise<Usuario> {
+  async findById(id: number): Promise<Partial<Usuario>> {
     const response = await this.usuarioRepository.findOne({
       where: {
         id
@@ -32,7 +32,8 @@ export class UsuarioService {
 
     if (!response) throw new Error('Usuário não encontrado');
 
-    return response;
+    const {senha, ...rest} = response;
+    return rest;
   }
 
   async findByEmail(email: string): Promise<Usuario> {
@@ -46,20 +47,22 @@ export class UsuarioService {
     });
 
     if (!response) throw new Error('Usuário não encontrado');
-
+    
     return response;
   }
 
-  async findAll(): Promise<Usuario[]> {
-    return await this.usuarioRepository.find({
+  async findAll(): Promise<Partial<Usuario>[]> {
+    const usuarios = await this.usuarioRepository.find({
       relations: {
         role: true
       }
     });
+
+    return usuarios.map(({senha, ...rest}) => rest)
   }
 
   async create(dto: CreateUsuarioDto, usuarioLogado: AuthResponseDto): Promise<Usuario> {
-    if(usuarioLogado.role.nome !== 'ADMIN')
+    if(usuarioLogado.role !== 'ADMIN')
       throw new Error('Você não tem permissão para criar um usuário');
 
     const role = await this.roleRepository.findOneBy({ id: dto.roleId });
@@ -81,7 +84,7 @@ export class UsuarioService {
   }
 
   async update(id: number, dto: UpdateUsuarioDto, usuarioLogado: AuthResponseDto): Promise<Usuario> {
-    if(usuarioLogado.id !== id && usuarioLogado.role.nome !== 'ADMIN')
+    if(usuarioLogado.id !== id && usuarioLogado.role !== 'ADMIN')
       throw new Error('Você não tem permissão para atualizar este usuário');
 
     const usuario = await this.usuarioRepository.findOneBy({ id });
@@ -107,7 +110,7 @@ export class UsuarioService {
   }
 
   async remove(id: number, usuarioLogado: AuthResponseDto): Promise<void> {
-    if(usuarioLogado.id !== id && usuarioLogado.role.nome !== 'ADMIN')
+    if(usuarioLogado.id !== id && usuarioLogado.role !== 'ADMIN')
       throw new Error('Você não tem permissão para deletar este usuário');
 
     const usuario = await this.usuarioRepository.findOneBy({id});

@@ -44,7 +44,7 @@ export class EnderecoService {
   }
 
   async create(dto: CreateEnderecoDto, usuarioLogado: AuthResponseDto): Promise<Endereco> {
-    if(dto.usuarioId !== usuarioLogado.id && usuarioLogado.role.nome !== 'ADMIN')
+    if(dto.usuarioId !== usuarioLogado.id && usuarioLogado.role !== 'ADMIN')
       throw new Error('Você não tem permissão para criar este endereço');
     
     const usuario = await this.usuarioRepository.findOneBy({id: dto.usuarioId});
@@ -72,7 +72,7 @@ export class EnderecoService {
     if (!endereco)
       throw new Error('Endereço não encontrado');
 
-    if(endereco.usuario.id !== usuarioLogado.id && usuarioLogado.role.nome !== 'admin')
+    if(endereco.usuario.id !== usuarioLogado.id && usuarioLogado.role !== 'admin')
       throw new Error('Você não tem permissão para atualizar este endereço');
 
     Object.assign(endereco, dto);
@@ -95,7 +95,7 @@ export class EnderecoService {
     if (!endereco)
       throw new Error('Endereço não encontrado');
 
-    if(endereco.usuario.id !== usuarioLogado.id && usuarioLogado.role.nome !== 'admin')
+    if(endereco.usuario.id !== usuarioLogado.id && usuarioLogado.role !== 'admin')
       throw new Error('Você não tem permissão para deletar este endereço');
     await this.enderecoRepository.delete(id);
   }
