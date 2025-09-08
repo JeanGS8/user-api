@@ -23,6 +23,10 @@ export class RoleService {
   }
 
   async findAll(): Promise<Role[]> {
-    return await this.roleRepository.find();
+    return await this.roleRepository.find({
+      order: {
+        id: 'ASC'
+      },
+    });
   }
 }

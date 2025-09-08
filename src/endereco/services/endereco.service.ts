@@ -35,6 +35,9 @@ export class EnderecoService {
 
   async findAll(): Promise<Endereco[]> {
     return await this.enderecoRepository.find({
+      order: {
+        id: 'ASC'
+      },
       relations: {
         usuario: {
           role: true
@@ -52,9 +55,11 @@ export class EnderecoService {
     if (!usuario)
       throw new Error('Usuário não encontrado');
 
+    const {senha, ...restUsuario} = usuario;
+
     const endereco = this.enderecoRepository.create({
       ...dto,
-      usuario: usuario
+      usuario: restUsuario
     });
 
     return await this.enderecoRepository.save(endereco);
@@ -92,10 +97,11 @@ export class EnderecoService {
       where: { id },
       relations: { usuario: true }
     });
+
     if (!endereco)
       throw new Error('Endereço não encontrado');
 
-    if(endereco.usuario.id !== usuarioLogado.id && usuarioLogado.role !== 'admin')
+    if(endereco.usuario.id !== usuarioLogado.id && usuarioLogado.role !== 'ADMIN')
       throw new Error('Você não tem permissão para deletar este endereço');
     await this.enderecoRepository.delete(id);
   }

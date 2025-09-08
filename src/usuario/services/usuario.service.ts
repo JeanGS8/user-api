@@ -7,6 +7,7 @@ import { CreateUsuarioDto } from '../dto/create-usuario.dto';
 import { UpdateUsuarioDto } from '../dto/update-usuario.dto';
 import { Bcrypt } from 'src/auth/bcrypt/bcrypt';
 import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
+import { Endereco } from 'src/endereco/entities/endereco.entity';
 
 @Injectable()
 export class UsuarioService {
@@ -17,20 +18,28 @@ export class UsuarioService {
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
 
+    @InjectRepository(Endereco)
+    private enderecoRepository: Repository<Endereco>,
+
     private bcrypt: Bcrypt
   ) {}
 
-  async findById(id: number): Promise<Partial<Usuario>> {
+  async findById(id: number, usuarioLogado: AuthResponseDto): Promise<Partial<Usuario>> {
     const response = await this.usuarioRepository.findOne({
       where: {
         id
       },
       relations: {
-        role: true
+        role: true,
+        endereco: true
       }
     });
 
-    if (!response) throw new Error('Usuário não encontrado');
+    if (!response)
+      throw new Error('Usuário não encontrado');
+
+    if(usuarioLogado.role == "ADMIN" || usuarioLogado.id == id)
+      return response;
 
     const {senha, ...rest} = response;
     return rest;
@@ -42,7 +51,8 @@ export class UsuarioService {
         email
       },
       relations: {
-        role: true
+        role: true,
+        endereco: true
       }
     });
 
@@ -53,8 +63,12 @@ export class UsuarioService {
 
   async findAll(): Promise<Partial<Usuario>[]> {
     const usuarios = await this.usuarioRepository.find({
+      order: {
+        id: 'ASC'
+      },
       relations: {
-        role: true
+        role: true,
+        endereco: true
       }
     });
 
@@ -116,6 +130,7 @@ export class UsuarioService {
     const usuario = await this.usuarioRepository.findOneBy({id});
     if (!usuario)
       throw new Error('Usuário não encontrado');
+    await this.enderecoRepository.delete({ usuario: { id } });
     await this.usuarioRepository.delete(id);
   }
 }

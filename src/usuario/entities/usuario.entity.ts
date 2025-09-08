@@ -44,5 +44,5 @@ export class Usuario {
   role: Role;
 
   @OneToMany(() => Endereco, endereco => endereco.usuario)
-  enderecos: Endereco[];
+  endereco: Endereco[];
 }

@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { Role } from 'src/role/entities/role.entity';
 import { Bcrypt } from 'src/auth/bcrypt/bcrypt';
+import { Endereco } from 'src/endereco/entities/endereco.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Usuario, Role])],
+  imports: [TypeOrmModule.forFeature([Usuario, Role, Endereco])],
   providers: [UsuarioService, Bcrypt],
   controllers: [UsuarioController],
   exports: [UsuarioService],

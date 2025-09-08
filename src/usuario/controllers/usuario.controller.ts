@@ -30,11 +30,11 @@ export class UsuarioController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findById(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any
   ): Promise<Partial<Usuario>> {
-    const usuario = await this.usuarioService.findById(+id);
-    if(!usuario) throw new Error('Usuário não encontrado');
-    return usuario;
+    const usuarioLogado: AuthResponseDto = req.user;
+    return await this.usuarioService.findById(id, usuarioLogado);
   }
   
   @Put(':id')
